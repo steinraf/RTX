@@ -31,7 +31,7 @@ Color operator*(const double &k, const Color& me){
 }
 
 Camera::Camera(double pixelXResolution, double pixelYResolution, Eigen::Vector3d pos)
-    : pixelXResolution(pixelXResolution), pixelYResolution(pixelYResolution), pos(pos){
+    : pos(pos), pixelXResolution(pixelXResolution), pixelYResolution(pixelYResolution){
     aspect_ratio = static_cast<double>(pixelXResolution)/static_cast<double>(pixelYResolution);
     viewportHeight = 2;
     viewportWidth = viewportHeight * aspect_ratio;
@@ -78,4 +78,49 @@ double getRandom(){
     static std::default_random_engine e;
     static std::uniform_real_distribution<> dis(-1, 1);
     return dis(e);
+}
+
+Timer::Timer()
+    : start(std::chrono::high_resolution_clock::now()){
+
+}
+
+double Timer::time() {
+    std::chrono::duration<double> diff = std::chrono::high_resolution_clock::now() - start;
+    return diff.count();
+}
+
+Benchmark::Benchmark(std::function<void(void)> f, unsigned int times){
+    std::vector<double> runtime(times);
+    for(unsigned int i = 0; i < times; ++i){
+        Timer t;
+        f();
+        runtime[i] = t.time();
+    }
+    runtimes = runtime;
+}
+
+void Benchmark::plotHistogram() {
+
+    std::sort(runtimes.begin(), runtimes.end());
+
+    const double mean = std::accumulate(runtimes.begin(), runtimes.end(), 0.0)/runtimes.size();
+    const double variance = std::accumulate(runtimes.begin(), runtimes.end(), 0.0,
+                                      [mean](int a, int b){return a + std::pow(b-mean, 2);})/runtimes.size();
+
+    const double stddev = std::sqrt(variance);
+
+    std::cout << "Mean:\t" << mean << '\n'
+              << "Stddev:\t" << stddev << '\n';
+
+    const unsigned int numBuckets = 10;
+    std::array<int, numBuckets> arr;
+    arr.fill(0);
+    for(unsigned int i = 0; i < runtimes.size(); ++i){
+        int dist = (runtimes[i] - mean)/stddev + std::ceil(numBuckets/2.0);
+        ++arr[std::clamp(dist, 0, static_cast<int>(numBuckets-1))];
+    }
+
+    for(auto num : arr)
+        std::cout << std::string(num, '-') << '\n';
 }

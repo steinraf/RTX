@@ -6,6 +6,9 @@
 #include "eigen3/Eigen/Dense"
 #include <memory>
 #include <random>
+#include <chrono>
+#include <iostream>
+#include <algorithm>
 //#include "shapes.h"
 
 class Color{
@@ -43,14 +46,36 @@ public:
     Camera(double pixelXResolution, double pixelYResolution, Eigen::Vector3d pos={0, 0, 0});
     Ray getRay(double i, double j) const;
 private:
+
     Eigen::Vector3d pos;
 
-    double focal_length = 1;
     double pixelXResolution;
     double pixelYResolution;
+
+
     double aspect_ratio;
     double viewportHeight;
     double viewportWidth;
+
+    double focal_length = 1;
+};
+
+class Timer{
+public:
+    Timer();
+
+    double time();
+
+private:
+    std::chrono::time_point<std::chrono::high_resolution_clock> start;
+};
+
+class Benchmark{
+public:
+    Benchmark(std::function<void(void)> f, unsigned int times);
+    void plotHistogram();
+private:
+    std::vector<double> runtimes;
 };
 
 double getRandom();

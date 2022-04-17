@@ -4,4 +4,4 @@
 ![](renders/image2.png)
 
 ### Spheres with reflection
-![](renders/image3.png)
+![](renders/reflective_spheresHD.png)

@@ -12,20 +12,22 @@
 
 class Scene {
 public:
-    Scene(unsigned int width, unsigned int height);
+    Scene(unsigned int width, unsigned int height, unsigned int subSamples=100, unsigned int maxRayDepth=50);
 
     void render();
 
     void addShape(std::shared_ptr<Shape> shape);
 
 private:
+
+
     unsigned int width;
     unsigned int height;
 
-    const int maxRayDepth = 50;
-    const int subSamples = 100;
-
     Camera camera;
+
+    const int subSamples;
+    const int maxRayDepth;
 
     std::pair<std::shared_ptr<Shape>, double> getClosestIntersect(const Ray& r) const;
 

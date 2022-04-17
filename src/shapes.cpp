@@ -5,7 +5,7 @@
 #include "shapes.h"
 
 Sphere::Sphere(Eigen::Vector3d pos, double r, double reflectivity)
-    :pos(pos), radius(r), reflectivity(reflectivity){
+    :reflectivity(reflectivity), pos(pos), radius(r){
 
 }
 
