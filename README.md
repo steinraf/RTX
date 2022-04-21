@@ -10,4 +10,4 @@
 
 ### Added Color support
 
-![](renders/colorful_reflective_spheres_HD.png)
+![](renders/colorful_reflective_spheres_4K.png)

@@ -17,7 +17,7 @@
 //
 
 void randomSpheres() {
-    Scene scene(3840, 2160, 100, 50);
+    Scene scene(3840, 2160, 1000, 50);
     for (int i = 0; i < 30; ++i) {
         Color c{getRandom()/2 + 0.5, getRandom()/2 + 0.5, getRandom()/2 + 0.5};
         auto mat = std::make_shared<Metal>(c);

@@ -8,6 +8,7 @@
 #include "shapes.h"
 #include <fstream>
 #include <iostream>
+#include <filesystem>
 
 
 /**
@@ -69,7 +70,8 @@ private:
     const int subSamples; /** Amount of Rays cast per Pixel **/
     const int maxRayDepth; /** Maximum amount of times a Ray can reflect from a Surface **/
 
-    const std::string path = "/home/steinraf/Coding/Raytracing/data/image.ppm"; /** Path where image will be saved **/
+    const std::string base_path = std::filesystem::path(__FILE__).parent_path().parent_path();
+    const std::string path = base_path + "/data/image.ppm"; /** Path where image will be saved **/
 
     std::vector<std::shared_ptr<Shape>> shapes; /** Vector to save all Shapes **/
 };
