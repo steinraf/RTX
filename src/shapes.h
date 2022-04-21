@@ -14,6 +14,11 @@
  */
 class Shape {
 public:
+
+    /**
+     * @brief Adds a Material pointer to the Shape Base
+     * @param mat
+     */
     Shape(std::shared_ptr<Material> mat);
 
 

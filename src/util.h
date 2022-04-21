@@ -11,6 +11,13 @@
 #include <iostream>
 
 /**
+ * @brief Defines the conversion between Degrees and Radians
+ * @param[in] deg - Degrees
+ * @return Radians
+ */
+inline double degToRad(double deg);
+
+/**
  * @brief Class describing a Color value
  */
 class Color {
@@ -149,7 +156,9 @@ public:
      * @param[in] pixelYResolution - Amount of Pixels in the y direction
      * @param[in] pos - Position of the Camera
      */
-    Camera(double pixelXResolution, double pixelYResolution, Eigen::Vector3d pos = {0, 0, 0});
+    Camera(double pixelXResolution, double pixelYResolution,
+           Eigen::Vector3d pos = {13,2,3}, Eigen::Vector3d lookAt = {0, 0, 0},
+           Eigen::Vector3d up = {0, 1, 0});
 
     /**
      * @brief Returns the Ray for a given position in the Camera View
@@ -163,15 +172,27 @@ private:
 
     Eigen::Vector3d pos; /** Camera Position **/
 
+    Eigen::Vector3d lookAt; /** Where Camera is facing **/
+
+    Eigen::Vector3d u; /** Local x coordinate **/
+    Eigen::Vector3d v; /** Local y coordinate **/
+    Eigen::Vector3d w; /** Local z coordinate **/
+
     double pixelXResolution; /** Amount of Pixels in x direction **/
     double pixelYResolution; /** Amount of Pixels in y direction **/
-
 
     double aspectRatio; /** Ratio of Width/Height of the Viewport **/
     double viewportHeight; /** Height of the Viewport **/
     double viewportWidth; /** Width of the Viewport **/
 
-    double focalLength = 1.0; /** Focal Length of the Camera **/
+    double aperture = 0.1; /** Size of the Camera Hole **/
+    double lensRadius; /** Size of the Lens **/
+    double fov; /** Camera field of view **/
+
+    Eigen::Vector3d horizontal; /** Local x-coordinates **/
+    Eigen::Vector3d vertical; /** Local y-coordinates **/
+    Eigen::Vector3d lowerLeft; /** World bottomLeft corner **/
+
 };
 
 /**
@@ -220,3 +241,11 @@ private:
  * @return Returns a random number from -1.0 to 1.0
  */
 double getRandom();
+
+/**
+ * @brief Returns a random point in the x-y unit sphere
+ * @return Point inside the unit sphere
+ */
+inline Eigen::Vector3d getRandomInSphere();
+
+

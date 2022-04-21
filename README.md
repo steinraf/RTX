@@ -15,3 +15,8 @@
 ### Added Fuzzy Metal and Transparent Glass Materials
 
 ![](renders/glassSphere4K.png)
+
+### Final Scene render with Lambertian, Metal and Dielectric Materials
+![](renders/finalRender4K.png)
+
+####This project was heavily inspired by the book [_Ray Tracing in One Weekend_](https://raytracing.github.io/books/RayTracingInOneWeekend.html)

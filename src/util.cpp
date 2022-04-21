@@ -4,6 +4,10 @@
 
 #include "util.h"
 
+double degToRad(double deg){
+    return deg * M_PI / 180.0;
+}
+
 Color::Color()
         : color(Eigen::Vector3d::Zero()) {
 
@@ -39,11 +43,30 @@ Color Color::operator*(const Color &other) {
     return {color[0] * other.color[0], color[1] * other.color[1], color[2] * other.color[2]};
 }
 
-Camera::Camera(double pixelXResolution, double pixelYResolution, Eigen::Vector3d pos)
-        : pos(pos), pixelXResolution(pixelXResolution), pixelYResolution(pixelYResolution) {
+Camera::Camera(double pixelXResolution, double pixelYResolution, Eigen::Vector3d pos,
+               Eigen::Vector3d lookAt, Eigen::Vector3d up)
+        : pos(pos), lookAt(lookAt), pixelXResolution(pixelXResolution), pixelYResolution(pixelYResolution) {
+
+    double focusDist = 10;//(lookAt-pos).norm();
+
+    fov = degToRad(20);
+
+    double h = std::tan(fov/2);
+
+
     aspectRatio = static_cast<double>(pixelXResolution) / static_cast<double>(pixelYResolution);
-    viewportHeight = 2;
+    viewportHeight = 2.0 * h;
     viewportWidth = viewportHeight * aspectRatio;
+
+    w = (pos - lookAt).normalized();
+    u = up.cross(w).normalized();
+    v = w.cross(u);
+
+    horizontal = focusDist * viewportWidth * u;
+    vertical = focusDist * viewportHeight * v;
+    lowerLeft = pos - horizontal/2 - vertical/2 - focusDist*w;
+
+    lensRadius = aperture/2.0;
 }
 
 std::ostream &operator<<(std::ostream &out, const Color &c) {
@@ -72,12 +95,13 @@ double Color::asGray() {
 
 Ray Camera::getRay(double i, double j) const {
     // The rays are drawn starting from top left -> bottom right
-    Eigen::Vector3d dir = {
-            -viewportWidth / 2 + i / (pixelXResolution - 1) * viewportWidth,
-            viewportHeight / 2 - j / (pixelYResolution - 1) * viewportHeight,
-            -focalLength
-    };
-    return Ray(pos, dir.normalized());
+    Eigen::Vector3d rdm = getRandomInSphere() * lensRadius;
+    Eigen::Vector3d offset{rdm[0], rdm[1], 0};
+
+    double localI = i / (pixelXResolution - 1);
+    double localJ = 1 - j / (pixelYResolution - 1);
+
+    return Ray(pos + offset, lowerLeft + localI * horizontal + localJ * vertical - pos - offset);
 }
 
 Ray::Ray(Eigen::Vector3d pos, Eigen::Vector3d dir)
@@ -94,6 +118,15 @@ double getRandom() {
     static std::uniform_real_distribution<> dis(-1, 1);
     return dis(e);
 }
+
+inline Eigen::Vector3d getRandomInSphere() {
+    while(true){
+        Eigen::Vector3d v{getRandom(), getRandom(), 0};
+        if(v.norm() <= 1) return v;
+    }
+}
+
+
 
 Timer::Timer()
         : start(std::chrono::high_resolution_clock::now()) {
@@ -150,5 +183,7 @@ Hit::Hit(const Ray &ray, double dist, Eigen::Vector3d normal)
 Eigen::Vector3d Hit::intersectPos() const {
     return ray.pos + ray.dir * dist;
 }
+
+
 
 

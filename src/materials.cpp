@@ -45,7 +45,7 @@ std::pair<Ray, Color> Dielectric::scatter(const Ray &ray, const Hit &hit) const 
     //Checks if ray comes from inside the object
     double refract_ratio = cosTheta < 0 ? refractiveIndex : 1.0/refractiveIndex;
 
-    if(refract_ratio * sinTheta > 1.0){
+    if(refract_ratio * sinTheta >= 1.0){
         Ray r{
                 hit.intersectPos(),
                 ray.dir - 2*ray.dir.dot(hit.normal)*hit.normal
