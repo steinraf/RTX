@@ -65,6 +65,13 @@ public:
     friend Color operator*(const double &k, const Color &me);
 
     /**
+     * @brief Defines the product of two Colors
+     * @param[in] other - Other Color
+     * @return elementwise product of Colors
+     */
+    Color operator*(const Color &other);
+
+    /**
      * @brief Defines the printing operator for a Color
      * @param[in] out - Stream where the Color will be written to
      * @param c - Color to be written
@@ -124,7 +131,7 @@ public:
      * @brief Gets the Ray-Shape intersection position
      * @return Position of Ray in @a dist units
      */
-    [[nodiscard]] inline Eigen::Vector3d intersectPos() const;
+    [[nodiscard]] Eigen::Vector3d intersectPos() const;
 
     Ray ray; /** Ray object before intersection **/
     double dist; /** Distance from ray position to intersection **/
@@ -164,7 +171,7 @@ private:
     double viewportHeight; /** Height of the Viewport **/
     double viewportWidth; /** Width of the Viewport **/
 
-    double focalLength = 1; /** Focal Length of the Camera **/
+    double focalLength = 1.0; /** Focal Length of the Camera **/
 };
 
 /**

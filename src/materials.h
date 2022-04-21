@@ -18,7 +18,7 @@ public:
      * @param[in] hit - Hit object describing the hit between the ray and the object
      * @return Outgoing ray and attenuation
      */
-    virtual std::pair<Ray, double> scatter(const Ray &ray, const Hit &hit) const = 0;
+    virtual std::pair<Ray, Color> scatter(const Ray &ray, const Hit &hit) const = 0;
 };
 
 /**
@@ -30,7 +30,7 @@ public:
      * @brief Constructs a lambertian Material given a reflectivity
      * @param[in] reflectivity - A measure of how much light is reflected by the surface
      */
-    Lambertian(double reflectivity);
+    Lambertian(const Color &reflectivity);
 
     /**
      * @brief Scatters a ray that hits a surface randomly along a unit circle
@@ -38,7 +38,31 @@ public:
      * @param[in] hit - Hit object describing the Ray-Shape intersection
      * @return returns the outgoing Ray and the attenuation (reflectivity)
      */
-    std::pair<Ray, double> scatter(const Ray &ray, const Hit &hit) const override;
+    std::pair<Ray, Color> scatter(const Ray &ray, const Hit &hit) const override;
 private:
-    double reflectivity; /** A measure of how much light is reflected by the surface **/
+    Color reflectivity; /** A measure of how much light is reflected by the surface **/
+};
+
+
+
+/**
+ * @brief Class describing a Metal-like reflective Material
+ */
+class Metal : public Material{
+public:
+    /**
+     * @brief Constructs a Metal-like Material given a reflectivity
+     * @param[in] reflectivity - A measure of how much light is reflected by the surface
+     */
+    Metal(const Color &reflectivity);
+
+    /**
+     * @brief Scatters a ray that hits a surface randomly along a unit circle
+     * @param[in] ray - Incoming Ray
+     * @param[in] hit - Hit object describing the Ray-Shape intersection
+     * @return returns the outgoing Ray and the attenuation (reflectivity)
+     */
+    std::pair<Ray, Color> scatter(const Ray &ray, const Hit &hit) const override;
+private:
+    Color reflectivity; /** A measure of how much light is reflected by the surface **/
 };

@@ -4,14 +4,29 @@
 
 #include "materials.h"
 
-Lambertian::Lambertian(double reflectivity)
+Lambertian::Lambertian(const Color &reflectivity)
         : reflectivity(reflectivity){
 
 }
 
-std::pair<Ray, double> Lambertian::scatter(const Ray &ray, const Hit &hit) const {
-    Eigen::Vector3d target = ray.pos + hit.normal + ((1 - reflectivity) * Eigen::Vector3d::Random()).normalized();
-    Ray r{ray.pos, (target - ray.pos).normalized()};
+std::pair<Ray, Color> Lambertian::scatter(const Ray &ray, const Hit &hit) const {
+    Eigen::Vector3d scatterDir = hit.normal + Eigen::Vector3d::Random().normalized();
+    if(scatterDir.norm() < 1e-4)
+        scatterDir = hit.normal;
+    Ray r{hit.intersectPos(), scatterDir.normalized()};
     return {r, reflectivity};
 }
 
+Metal::Metal(const Color &reflectivity)
+    :reflectivity(reflectivity){
+
+}
+
+std::pair<Ray, Color> Metal::scatter(const Ray &ray, const Hit &hit) const {
+    Ray r{
+        hit.intersectPos(),
+        (ray.dir - 2*ray.dir.dot(hit.normal)*hit.normal).normalized()
+    };
+    //assert(r.dir.dot(hit.normal) > 0);
+    return {r, reflectivity};
+}

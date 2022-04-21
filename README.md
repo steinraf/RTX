@@ -7,3 +7,7 @@
 ### Spheres with reflection
 
 ![](renders/reflective_spheresHD.png)
+
+### Added Color support
+
+![](renders/colorful_reflective_spheres_HD.png)

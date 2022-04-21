@@ -54,7 +54,7 @@ public:
      * @param[in] hit - Hit object describing the Ray-Shape Intersection
      * @return Ray after scattering off the Surface
      */
-    [[nodiscard]] virtual std::pair<Ray, double> scatter(const Ray &ray, const Hit &hit) const {
+    [[nodiscard]] virtual std::pair<Ray, Color> scatter(const Ray &ray, const Hit &hit) const {
         assert(material && "Undefined Material of Shape");
         return material->scatter(ray, hit);
     };

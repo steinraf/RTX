@@ -10,15 +10,12 @@ Scene::Scene(unsigned int width, unsigned int height, unsigned int subSamples, u
 }
 
 void Scene::render() {
-    std::ofstream file(path);
-    file << "P3\n"
-         << width << ' ' << height << "\n"
-                                      "255\n";
+
 
     std::vector<Color> colors(width * height);
 
     std::atomic<int> counter;
-#pragma omp parallel for
+#pragma omp parallel for shared(counter, colors, std::cerr), default(none)
     for (unsigned int j = 0; j < height; ++j) {
         std::cerr << "\rScanlines remaining: " << height - ++counter << ' ' << std::flush;
         for (unsigned int i = 0; i < width; ++i) {
@@ -58,6 +55,11 @@ void Scene::render() {
 //            std::cout << '\n';
 //        }
 
+    std::ofstream file(path);
+    file << "P3\n"
+         << width << ' ' << height << "\n"
+                                      "255\n";
+
     for (auto c: colors) {
         file << c;
     }
@@ -72,7 +74,7 @@ std::pair<std::shared_ptr<Shape>, double> Scene::getClosestIntersect(const Ray &
     std::pair<std::shared_ptr<Shape>, double> best = {nullptr, std::numeric_limits<double>::max()};
     for (auto shape: shapes) {
         double d = shape->findIntersect(r);
-        if (d != -1 && d >= 0.001 && d < best.second)
+        if (d >= 0.001 && d < best.second)
             best = {shape, d};
     }
     return best;

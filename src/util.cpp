@@ -35,6 +35,10 @@ Color operator*(const double &k, const Color &me) {
     return me * k;
 }
 
+Color Color::operator*(const Color &other) {
+    return {color[0] * other.color[0], color[1] * other.color[1], color[2] * other.color[2]};
+}
+
 Camera::Camera(double pixelXResolution, double pixelYResolution, Eigen::Vector3d pos)
         : pos(pos), pixelXResolution(pixelXResolution), pixelYResolution(pixelYResolution) {
     aspectRatio = static_cast<double>(pixelXResolution) / static_cast<double>(pixelYResolution);
@@ -63,6 +67,8 @@ Color &Color::operator+=(const Color &other) {
 double Color::asGray() {
     return (color[0] + color[1] + color[2]) / 3;
 }
+
+
 
 Ray Camera::getRay(double i, double j) const {
     // The rays are drawn starting from top left -> bottom right
@@ -141,7 +147,7 @@ Hit::Hit(const Ray &ray, double dist, Eigen::Vector3d normal)
 
 }
 
-inline Eigen::Vector3d Hit::intersectPos() const {
+Eigen::Vector3d Hit::intersectPos() const {
     return ray.pos + ray.dir * dist;
 }
 
