@@ -14,7 +14,7 @@ void Scene::render() {
 
     std::vector<Color> colors(width * height);
 
-    std::atomic<int> counter;
+    std::atomic<int> counter = 0;
 #pragma omp parallel for shared(counter, colors, std::cerr), default(none)
     for (unsigned int j = 0; j < height; ++j) {
         std::cerr << "\rScanlines remaining: " << height - ++counter << ' ' << std::flush;
@@ -88,7 +88,7 @@ Color Scene::getBackground(const Ray &ray) const {
 
 Color Scene::castRay(const Ray &ray, int rayDepth) const {
     if (rayDepth <= 0)
-        return Color{0, 0, 0};
+        return Color{0.0, 0.0, 0.0};
 
     const auto &[obj, dist] = getClosestIntersect(ray);
 

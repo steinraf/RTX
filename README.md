@@ -2,12 +2,16 @@
 
 ### Basic Sphere
 
-![](renders/image2.png)
+![](renders/reflectiveSphereHD400300.png)
 
 ### Spheres with reflection
 
-![](renders/reflective_spheresHD.png)
+![](renders/reflectiveSpheresHD.png)
 
 ### Added Color support
 
-![](renders/colorful_reflective_spheres_4K.png)
+![](renders/colorfulReflectiveSpheres4k.png)
+
+### Added Fuzzy Metal and Transparent Glass Materials
+
+![](renders/glassSphere4K.png)

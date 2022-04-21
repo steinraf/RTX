@@ -27,7 +27,7 @@ double Sphere::findIntersect(const Ray &ray) const {
         const double sol1 = -a - sqrDisc;
         const double sol2 = -a + sqrDisc;
         const double min = std::min(sol1, sol2);
-        if (min < 0)
+        if (min < 0.001)
             return std::max(sol1, sol2);
         else
             return min;

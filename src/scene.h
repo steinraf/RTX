@@ -9,7 +9,7 @@
 #include <fstream>
 #include <iostream>
 #include <filesystem>
-
+#include <atomic>
 
 /**
  * @brief Class that handles all objects in a scene and allows it to be rendered by casting Rays
