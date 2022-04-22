@@ -19,4 +19,4 @@
 ### Final Scene render with Lambertian, Metal and Dielectric Materials
 ![](renders/finalRenderHighSubsample4K.png)
 
-####This project was heavily inspired by the book [_Ray Tracing in One Weekend_](https://raytracing.github.io/books/RayTracingInOneWeekend.html)
+This project was heavily inspired by the book [_Ray Tracing in One Weekend_](https://raytracing.github.io/books/RayTracingInOneWeekend.html)
