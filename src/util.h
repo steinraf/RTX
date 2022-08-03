@@ -16,41 +16,40 @@
  */
 class Vector3f{
 public:
-    Vector3f(){}
-    Vector3f(float x, float y, float z);
-    Vector3f(std::array<float, 3> arr);
+    __device__ Vector3f(){}
+    __device__ Vector3f(float x, float y, float z);
     ~Vector3f() = default;
-    Vector3f(const Vector3f& other);
+    __device__ Vector3f(const Vector3f& other);
     Vector3f(Vector3f&& other) noexcept = default;
-    Vector3f& operator=(const Vector3f& other);
+    __device__ Vector3f& operator=(const Vector3f& other);
     Vector3f& operator=(Vector3f&& other) = default;
 
-    [[nodiscard]] Vector3f operator-(const Vector3f& other) const;
+    [[nodiscard]] __device__ Vector3f operator-(const Vector3f& other) const;
 
-    [[nodiscard]] Vector3f operator+(const Vector3f& other) const;
+    [[nodiscard]] __device__ Vector3f operator+(const Vector3f& other) const;
 
-    friend Vector3f operator*(float s, const Vector3f& vec);
-    [[nodiscard]] Vector3f operator*(float scalar) const;
+    friend __device__ Vector3f operator*(float s, const Vector3f& vec);
+    [[nodiscard]] __device__ Vector3f operator*(float scalar) const;
 
-    [[nodiscard]] Vector3f operator/(float scalar) const;
+    [[nodiscard]] __device__ Vector3f operator/(float scalar) const;
 
-    [[nodiscard]] float operator[](size_t idx) const;
+    [[nodiscard]] __device__ float operator[](size_t idx) const;
 
-    [[nodiscard]] float squaredNorm() const;
+    [[nodiscard]] __device__ float squaredNorm() const;
 
-    [[nodiscard]] float norm() const;
+    [[nodiscard]] __device__ float norm() const;
 
-    [[nodiscard]] Vector3f normalized() const;
+    [[nodiscard]] __device__ Vector3f normalized() const;
 
-    [[nodiscard]] float dot(const Vector3f& other) const;
+    [[nodiscard]] __device__ float dot(const Vector3f& other) const;
 
-    [[nodiscard]] Vector3f cross(const Vector3f& other) const;
+    [[nodiscard]] __device__ Vector3f cross(const Vector3f& other) const;
 
-    static Vector3f Zero();
-    static Vector3f Random();
+    static __device__ Vector3f Zero();
+    static __device__ Vector3f Random();
 
 private:
-    std::array<float, 3> data;
+    float data[3];
 
 };
 
@@ -60,14 +59,14 @@ private:
  * @param vec vector to be scaled
  * @return vec * scalar
  */
-Vector3f operator*(float scalar, const Vector3f &vec);
+__device__ Vector3f operator*(float scalar, const Vector3f &vec);
 
 /**
  * @brief Defines the conversion between Degrees and Radians
  * @param[in] deg - Degrees
  * @return Radians
  */
-inline float degToRad(float deg);
+__device__ inline float degToRad(float deg);
 
 /**
  * @brief Class describing a Color value
@@ -77,7 +76,7 @@ public:
     /**
      * @brief Initializes a Color as Black
      */
-    Color();
+    __device__ Color();
 
     /**
      * @brief Initializes an RGB Color
@@ -85,27 +84,27 @@ public:
      * @param[in] g - Green Value in [0.0, 1.0]
      * @param[in] b - Blue Value in [0.0, 1.0]
      */
-    Color(float r, float g, float b);
+    __device__ Color(float r, float g, float b);
 
     /**
      * @brief Initializes a Color from a Vector
      * @param[in] c - Color as Vector
      */
-    Color(Vector3f c);
+    __device__ Color(Vector3f c);
 
     /**
      * @brief Defines addition between Colors
      * @param[in] other - Color to be added
      * @return Added Colors
      */
-    Color operator+(const Color &other);
+    __device__ Color operator+(const Color &other);
 
     /**
      * @brief Defines addition between Colors
      * @param[in] other - Color to be added
      * @return Reference to first color
      */
-    Color &operator+=(const Color &other);
+    __device__ Color &operator+=(const Color &other);
 
     /**
      * @brief Defines the scaling of a Color by a constant
@@ -113,7 +112,7 @@ public:
      * @param[in] k - amount of Scaling
      * @return Color value scaled by @a k
      */
-    friend Color operator*(const Color &me, const float &k);
+    __device__ friend Color operator*(const Color &me, const float &k);
 
     /**
      * @brief Defines the scaling of a Color by a constant
@@ -121,14 +120,14 @@ public:
      * @param[in] me - Color to be scaled
      * @return Color value scaled by @a k
      */
-    friend Color operator*(const float &k, const Color &me);
+    __device__ friend Color operator*(const float &k, const Color &me);
 
     /**
      * @brief Defines the product of two Colors
      * @param[in] other - Other Color
      * @return elementwise product of Colors
      */
-    Color operator*(const Color &other);
+    __device__ Color operator*(const Color &other);
 
     /**
      * @brief Defines the printing operator for a Color
@@ -142,7 +141,7 @@ public:
      * @brief Returns the Gray value of the number
      * @return Grayscale Value of the Color in [0.0, 1.0]
      */
-    float asGray();
+    __device__ float asGray();
 
     int subSamples; /** Subsample count needed for Gamma Correction **/
 private:
@@ -159,14 +158,14 @@ public:
      * @param pos - Starting Position of the Ray
      * @param dir - Unit Direction where the Ray will be heading
      */
-    Ray(Vector3f pos, Vector3f dir);
+    __device__ Ray(Vector3f pos, Vector3f dir);
 
     /**
      * @brief Calculates where Ray will be in @a dist units of distance
      * @param dist - Distance Ray travels
      * @return Position Vector of new Ray location
      */
-    Vector3f at(float dist) const;
+    __device__ Vector3f at(float dist) const;
 
     Vector3f pos; /** Position of the Ray **/
     Vector3f dir; /** Direction of the Ray **/
@@ -184,13 +183,13 @@ public:
      * @param[in] dist - Distance of intersection, starting from ray position
      * @param[in] normal - Normal of intersection
      */
-    Hit(const Ray &ray, float dist, Vector3f normal);
+    __device__ Hit(const Ray &ray, float dist, Vector3f normal);
 
     /**
      * @brief Gets the Ray-Shape intersection position
      * @return Position of Ray in @a dist units
      */
-    [[nodiscard]] Vector3f intersectPos() const;
+    [[nodiscard]] __device__ Vector3f intersectPos() const;
 
     Ray ray; /** Ray object before intersection **/
     float dist; /** Distance from ray position to intersection **/
@@ -208,7 +207,7 @@ public:
      * @param[in] pixelYResolution - Amount of Pixels in the y direction
      * @param[in] pos - Position of the Camera
      */
-    Camera(float pixelXResolution, float pixelYResolution,
+    __device__ Camera(float pixelXResolution, float pixelYResolution,
            Vector3f pos = {13.0f,2.0f,3.0f}, Vector3f lookAt = {0.0f, 0.0f, 0.0f},
            Vector3f up = {0.0f, 1.0f, 0.0f});
 
@@ -218,7 +217,7 @@ public:
      * @param[in] j - y index of Ray
      * @return Ray getting sent out of the Camera
      */
-    Ray getRay(float i, float j) const;
+    __device__ Ray getRay(float i, float j) const;
 
 private:
 
@@ -292,12 +291,18 @@ private:
  * @brief Returns a random number
  * @return Returns a random number from -1.0f to 1.0f
  */
-float getRandom();
+__device__ float getRandom();
 
 /**
  * @brief Returns a random point in the x-y unit sphere
  * @return Point inside the unit sphere
  */
-inline Vector3f getRandomInSphere();
+__device__ inline Vector3f getRandomInSphere();
+
+__device__ inline auto clamp(auto val, auto low, auto high){
+    if(val < low) return low;
+    if(val > high) return high;
+    return val;
+}
 
 

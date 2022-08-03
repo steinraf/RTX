@@ -5,12 +5,17 @@
 #include "shapes.h"
 
 
-Shape::Shape(std::shared_ptr<Material> mat)
+Shape::Shape(Material *mat)
         : material(mat){
 
 }
 
-Sphere::Sphere(Vector3f pos, float r, std::shared_ptr<Material> mat)
+Shape::~Shape() noexcept {
+    delete material;
+}
+
+
+Sphere::Sphere(Vector3f pos, float r, Material *mat)
         : Shape(mat), center(pos), radius(r) {
 
 }

@@ -4,6 +4,7 @@
 
 #include "materials.h"
 
+
 Lambertian::Lambertian(const Color &reflectivity)
         : reflectivity(reflectivity){
 

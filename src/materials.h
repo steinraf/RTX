@@ -12,13 +12,16 @@
  */
 class Material {
 public:
+
+    virtual ~Material() {};
+
     /**
      * @brief Describes how a ray should scatter from a specific material
      * @param[in] ray - Incoming Ray
      * @param[in] hit - Hit object describing the hit between the ray and the object
      * @return Outgoing ray and attenuation
      */
-    virtual std::pair<Ray, Color> scatter(const Ray &ray, const Hit &hit) const = 0;
+    __device__ virtual std::pair<Ray, Color> scatter(const Ray &ray, const Hit &hit) const = 0;
 };
 
 /**
@@ -30,7 +33,7 @@ public:
      * @brief Constructs a lambertian Material given a reflectivity
      * @param[in] reflectivity - A measure of how much light is reflected by the surface
      */
-    Lambertian(const Color &reflectivity);
+    __device__ Lambertian(const Color &reflectivity);
 
     /**
      * @brief Scatters a ray that hits a surface randomly along a unit circle
@@ -38,7 +41,7 @@ public:
      * @param[in] hit - Hit object describing the Ray-Shape intersection
      * @return returns the outgoing Ray and the attenuation (reflectivity)
      */
-    std::pair<Ray, Color> scatter(const Ray &ray, const Hit &hit) const override;
+    __device__ std::pair<Ray, Color> scatter(const Ray &ray, const Hit &hit) const override;
 private:
     Color reflectivity; /** A measure of how much light is reflected by the surface **/
 };
@@ -55,7 +58,7 @@ public:
      * @param[in] reflectivity - A measure of how much light is reflected by the surface
      * @param[in]fuzziness - A measure of how much the reflection deviates from being perfect
      */
-    Metal(const Color &reflectivity, double fuzziness = 0);
+    __device__ Metal(const Color &reflectivity, double fuzziness = 0);
 
     /**
      * @brief Scatters a ray that hits a surface randomly along a unit circle
@@ -63,7 +66,7 @@ public:
      * @param[in] hit - Hit object describing the Ray-Shape intersection
      * @return returns the outgoing Ray and the attenuation (reflectivity)
      */
-    std::pair<Ray, Color> scatter(const Ray &ray, const Hit &hit) const override;
+    __device__ std::pair<Ray, Color> scatter(const Ray &ray, const Hit &hit) const override;
 private:
     Color reflectivity; /** A measure of how much light is reflected by the surface **/
     double fuzziness; /** A measure of the magnitude of the perturbation from the perfect reflextion **/
@@ -79,7 +82,7 @@ public:
      * @param[in] reflectivity - A measure of what wavelength the material absorbs
      * @param[in] refractiveIndex - A measure of how much Rays are bent on changing Mediums
      */
-    Dielectric(const Color &reflectivity, double refractiveIndex);
+    __device__ Dielectric(const Color &reflectivity, double refractiveIndex);
 
     /**
      * @brief Scatters a ray that interacts with the Surface of the Dielectric Material
@@ -87,7 +90,7 @@ public:
      * @param[in] hit - Hit object describing the interaction at the Surface
      * @return returns the outgoing Ray and Attenuation
      */
-    std::pair<Ray, Color> scatter(const Ray &ray, const Hit &hit) const override;
+    __device__ std::pair<Ray, Color> scatter(const Ray &ray, const Hit &hit) const override;
 
 private:
     Color reflectivity; /** A measure of which wavelengths are reflected by the surface **/

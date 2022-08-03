@@ -20,22 +20,22 @@ public:
      * @brief Adds a Material pointer to the Shape Base
      * @param mat
      */
-    Shape(std::shared_ptr<Material> mat);
-
+    __device__ Shape(Material *mat);
+    __device__ virtual ~Shape() noexcept;
 
     /**
      * @brief Returns the distance a ray needs to travel to intersect the Shape
      * @param[in] ray - Cast Ray
      * @return Distance to Shape
      */
-    virtual float findIntersect(const Ray &ray) const = 0;
+    __device__ virtual float findIntersect(const Ray &ray) const = 0;
 
     /**
      * @brief Given a position inside the Shape (Used in combination with @b findIntersect ) returns the Surface normal facing outwards
      * @param[in] pos - Position close to the Shape Surface
      * @return normalized Surface normal closest to pos
      */
-    virtual Vector3f getNormal(const Vector3f &pos) const = 0;
+    __device__ virtual Vector3f getNormal(const Vector3f &pos) const = 0;
 
     /**
      * @brief Calculates Hit object for a ray intersection at distance @a intersect
@@ -43,14 +43,14 @@ public:
      * @param[in] intersect - Distance until Ray intersects Shape
      * @return Hit object describing the intersection
      */
-    [[nodiscard]] virtual Hit calculateHit(const Ray &ray, float intersect) = 0;
+    [[nodiscard]] __device__ virtual Hit calculateHit(const Ray &ray, float intersect) = 0;
 
     /**
      * @brief Conventient overload for @c calculateHit( const @a Ray &ray, @a float intersect)
      * @param[in] ray - Ray that will intersect Shape
      * @return Hit object describing the intersection
      */
-    [[nodiscard, maybe_unused]] virtual Hit calculateHit(const Ray &ray){
+    [[nodiscard, maybe_unused]] __device__ virtual Hit calculateHit(const Ray &ray){
         return this->calculateHit(ray, findIntersect(ray));
     }
 
@@ -60,13 +60,13 @@ public:
      * @param[in] hit - Hit object describing the Ray-Shape Intersection
      * @return Ray after scattering off the Surface
      */
-    [[nodiscard]] virtual std::pair<Ray, Color> scatter(const Ray &ray, const Hit &hit) const {
+    [[nodiscard]] virtual __device__ std::pair<Ray, Color> scatter(const Ray &ray, const Hit &hit) const {
         assert(material && "Undefined Material of Shape");
         return material->scatter(ray, hit);
     };
 
 private:
-    std::shared_ptr<Material> material; /** Material that is associated with Shape **/
+    Material *material; /** Material that is associated with Shape **/
 
 
 };
@@ -82,21 +82,21 @@ public:
      * @param[in] r - Radius of the Sphere
      * @param[in] mat - Material of Sphere
      */
-    Sphere(Vector3f pos, float r, std::shared_ptr<Material> mat);
+    __device__ Sphere(Vector3f pos, float r, Material *mat);
 
     /**
      * @brief Finds the intersection of a Ray with a Sphere
      * @param[in] ray - Ray to be considered
      * @return distance of closest intersection
      */
-    float findIntersect(const Ray &ray) const override;
+    __device__ float findIntersect(const Ray &ray) const override;
 
     /**
      * @brief Finds the normal for the Intersection
      * @param[in] pos - Position where Sphere is penetrated
      * @return Normalized Sphere Normal vector
      */
-    Vector3f getNormal(const Vector3f &pos) const override;
+    __device__ Vector3f getNormal(const Vector3f &pos) const override;
 
     /**
      * @brief Calculates the Hit object for a given Ray
@@ -104,7 +104,7 @@ public:
      * @param intersect - Distance where Sphere is intersected
      * @return Hit object of Intersection
      */
-    [[nodiscard]] Hit calculateHit(const Ray &ray, float intersect) override;
+    [[nodiscard]] __device__ Hit calculateHit(const Ray &ray, float intersect) override;
 
 
 private:

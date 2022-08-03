@@ -9,7 +9,13 @@ Scene::Scene(unsigned int width, unsigned int height, unsigned int subSamples, u
 
 }
 
-void Scene::render() {
+__device__ Scene::~Scene() {
+    for(auto shape: shapes){
+        delete shape;
+    }
+}
+
+__device__ void Scene::render() {
 
 
     std::vector<Color> colors(width * height);
@@ -65,28 +71,28 @@ void Scene::render() {
     }
 }
 
-void Scene::addShape(std::shared_ptr<Shape> shape) {
+__device__ void Scene::addShape(Shape * shape) {
     shapes.push_back(shape);
 
 }
 
-std::pair<std::shared_ptr<Shape>, double> Scene::getClosestIntersect(const Ray &r) const {
-    std::pair<std::shared_ptr<Shape>, double> best = {nullptr, std::numeric_limits<double>::max()};
-    for (auto shape: shapes) {
-        double d = shape->findIntersect(r);
+__device__ std::pair<Shape *, double> Scene::getClosestIntersect(const Ray &r) const {
+    std::pair<Shape *, double> best = {nullptr, std::numeric_limits<double>::max()};
+    for(int i = 0; i < shapes.size(); ++i){
+        double d = shapes.data()[i]->findIntersect(r);
         if (d >= 0.001 && d < best.second)
             best = {shape, d};
     }
     return best;
 }
 
-Color Scene::getBackground(const Ray &ray) const {
+__device__ Color Scene::getBackground(const Ray &ray) const {
 
     double grad = (ray.dir[1] + 1) / 2; // Map from -1 1 to 0 1
     return (1 - grad) * Color{1.0, 1.0, 1.0} + grad * Color{0.5, 0.7, 1.0};
 }
 
-Color Scene::castRay(const Ray &ray, int rayDepth) const {
+__device__ Color Scene::castRay(const Ray &ray, int rayDepth) const {
     if (rayDepth <= 0)
         return Color{0.0, 0.0, 0.0};
 
