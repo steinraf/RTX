@@ -10,7 +10,7 @@ Lambertian::Lambertian(const Color &reflectivity)
 }
 
 std::pair<Ray, Color> Lambertian::scatter(const Ray &ray, const Hit &hit) const {
-    Eigen::Vector3d scatterDir = hit.normal + Eigen::Vector3d::Random().normalized();
+    Vector3f scatterDir = hit.normal + Vector3f::Random().normalized();
     if(scatterDir.norm() < 1e-4)
         scatterDir = hit.normal;
     Ray r{hit.intersectPos(), scatterDir.normalized()};
@@ -25,7 +25,7 @@ Metal::Metal(const Color &reflectivity, double fuzziness)
 std::pair<Ray, Color> Metal::scatter(const Ray &ray, const Hit &hit) const {
     Ray r{
         hit.intersectPos(),
-        ray.dir - 2*ray.dir.dot(hit.normal)*hit.normal + Eigen::Vector3d::Random().normalized() * fuzziness
+        ray.dir - 2*ray.dir.dot(hit.normal)*hit.normal + Vector3f::Random().normalized() * fuzziness
     };
     //assert(r.dir.dot(hit.normal) > 0);
     return {r, reflectivity};
@@ -53,8 +53,8 @@ std::pair<Ray, Color> Dielectric::scatter(const Ray &ray, const Hit &hit) const 
         return {r, reflectivity};
     }else{
         int sign = cosTheta > 0 ? 1 : -1;
-        Eigen::Vector3d orthDir = refract_ratio * (ray.dir + cosTheta*hit.normal);
-        Eigen::Vector3d paraDir = -sign*std::sqrt(std::abs(1.0 - orthDir.squaredNorm())) * hit.normal;
+        Vector3f orthDir = refract_ratio * (ray.dir + cosTheta*hit.normal);
+        Vector3f paraDir = -sign*std::sqrt(std::abs(1.0 - orthDir.squaredNorm())) * hit.normal;
 
         Ray r{
                 hit.intersectPos(),

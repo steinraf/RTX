@@ -4,18 +4,70 @@
 
 #pragma once
 
-#include "eigen3/Eigen/Dense"
 #include <memory>
 #include <random>
 #include <chrono>
 #include <iostream>
+#include <functional>
+#include <cassert>
+
+/**
+ * @brief Replacement of Eigen::Vector3f
+ */
+class Vector3f{
+public:
+    Vector3f(){}
+    Vector3f(float x, float y, float z);
+    Vector3f(std::array<float, 3> arr);
+    ~Vector3f() = default;
+    Vector3f(const Vector3f& other);
+    Vector3f(Vector3f&& other) noexcept = default;
+    Vector3f& operator=(const Vector3f& other);
+    Vector3f& operator=(Vector3f&& other) = default;
+
+    [[nodiscard]] Vector3f operator-(const Vector3f& other) const;
+
+    [[nodiscard]] Vector3f operator+(const Vector3f& other) const;
+
+    friend Vector3f operator*(float s, const Vector3f& vec);
+    [[nodiscard]] Vector3f operator*(float scalar) const;
+
+    [[nodiscard]] Vector3f operator/(float scalar) const;
+
+    [[nodiscard]] float operator[](size_t idx) const;
+
+    [[nodiscard]] float squaredNorm() const;
+
+    [[nodiscard]] float norm() const;
+
+    [[nodiscard]] Vector3f normalized() const;
+
+    [[nodiscard]] float dot(const Vector3f& other) const;
+
+    [[nodiscard]] Vector3f cross(const Vector3f& other) const;
+
+    static Vector3f Zero();
+    static Vector3f Random();
+
+private:
+    std::array<float, 3> data;
+
+};
+
+/**
+ * @brief Provides overload for scalar vector multiplication
+ * @param scalar float to scale
+ * @param vec vector to be scaled
+ * @return vec * scalar
+ */
+Vector3f operator*(float scalar, const Vector3f &vec);
 
 /**
  * @brief Defines the conversion between Degrees and Radians
  * @param[in] deg - Degrees
  * @return Radians
  */
-inline double degToRad(double deg);
+inline float degToRad(float deg);
 
 /**
  * @brief Class describing a Color value
@@ -33,13 +85,13 @@ public:
      * @param[in] g - Green Value in [0.0, 1.0]
      * @param[in] b - Blue Value in [0.0, 1.0]
      */
-    Color(double r, double g, double b);
+    Color(float r, float g, float b);
 
     /**
      * @brief Initializes a Color from a Vector
      * @param[in] c - Color as Vector
      */
-    Color(Eigen::Vector3d c);
+    Color(Vector3f c);
 
     /**
      * @brief Defines addition between Colors
@@ -61,7 +113,7 @@ public:
      * @param[in] k - amount of Scaling
      * @return Color value scaled by @a k
      */
-    friend Color operator*(const Color &me, const double &k);
+    friend Color operator*(const Color &me, const float &k);
 
     /**
      * @brief Defines the scaling of a Color by a constant
@@ -69,7 +121,7 @@ public:
      * @param[in] me - Color to be scaled
      * @return Color value scaled by @a k
      */
-    friend Color operator*(const double &k, const Color &me);
+    friend Color operator*(const float &k, const Color &me);
 
     /**
      * @brief Defines the product of two Colors
@@ -90,11 +142,11 @@ public:
      * @brief Returns the Gray value of the number
      * @return Grayscale Value of the Color in [0.0, 1.0]
      */
-    double asGray();
+    float asGray();
 
     int subSamples; /** Subsample count needed for Gamma Correction **/
 private:
-    Eigen::Vector3d color; /** Internal Color representation **/
+    Vector3f color; /** Internal Color representation **/
 };
 
 /**
@@ -107,17 +159,17 @@ public:
      * @param pos - Starting Position of the Ray
      * @param dir - Unit Direction where the Ray will be heading
      */
-    Ray(Eigen::Vector3d pos, Eigen::Vector3d dir);
+    Ray(Vector3f pos, Vector3f dir);
 
     /**
      * @brief Calculates where Ray will be in @a dist units of distance
      * @param dist - Distance Ray travels
      * @return Position Vector of new Ray location
      */
-    Eigen::Vector3d at(double dist) const;
+    Vector3f at(float dist) const;
 
-    Eigen::Vector3d pos; /** Position of the Ray **/
-    Eigen::Vector3d dir; /** Direction of the Ray **/
+    Vector3f pos; /** Position of the Ray **/
+    Vector3f dir; /** Direction of the Ray **/
 };
 
 
@@ -132,17 +184,17 @@ public:
      * @param[in] dist - Distance of intersection, starting from ray position
      * @param[in] normal - Normal of intersection
      */
-    Hit(const Ray &ray, double dist, Eigen::Vector3d normal);
+    Hit(const Ray &ray, float dist, Vector3f normal);
 
     /**
      * @brief Gets the Ray-Shape intersection position
      * @return Position of Ray in @a dist units
      */
-    [[nodiscard]] Eigen::Vector3d intersectPos() const;
+    [[nodiscard]] Vector3f intersectPos() const;
 
     Ray ray; /** Ray object before intersection **/
-    double dist; /** Distance from ray position to intersection **/
-    Eigen::Vector3d normal; /** Normal Vector of collision **/
+    float dist; /** Distance from ray position to intersection **/
+    Vector3f normal; /** Normal Vector of collision **/
 };
 
 /**
@@ -156,9 +208,9 @@ public:
      * @param[in] pixelYResolution - Amount of Pixels in the y direction
      * @param[in] pos - Position of the Camera
      */
-    Camera(double pixelXResolution, double pixelYResolution,
-           Eigen::Vector3d pos = {13,2,3}, Eigen::Vector3d lookAt = {0, 0, 0},
-           Eigen::Vector3d up = {0, 1, 0});
+    Camera(float pixelXResolution, float pixelYResolution,
+           Vector3f pos = {13.0f,2.0f,3.0f}, Vector3f lookAt = {0.0f, 0.0f, 0.0f},
+           Vector3f up = {0.0f, 1.0f, 0.0f});
 
     /**
      * @brief Returns the Ray for a given position in the Camera View
@@ -166,32 +218,32 @@ public:
      * @param[in] j - y index of Ray
      * @return Ray getting sent out of the Camera
      */
-    Ray getRay(double i, double j) const;
+    Ray getRay(float i, float j) const;
 
 private:
 
-    Eigen::Vector3d pos; /** Camera Position **/
+    Vector3f pos; /** Camera Position **/
 
-    Eigen::Vector3d lookAt; /** Where Camera is facing **/
+    Vector3f lookAt; /** Where Camera is facing **/
 
-    Eigen::Vector3d u; /** Local x coordinate **/
-    Eigen::Vector3d v; /** Local y coordinate **/
-    Eigen::Vector3d w; /** Local z coordinate **/
+    Vector3f u; /** Local x coordinate **/
+    Vector3f v; /** Local y coordinate **/
+    Vector3f w; /** Local z coordinate **/
 
-    double pixelXResolution; /** Amount of Pixels in x direction **/
-    double pixelYResolution; /** Amount of Pixels in y direction **/
+    float pixelXResolution; /** Amount of Pixels in x direction **/
+    float pixelYResolution; /** Amount of Pixels in y direction **/
 
-    double aspectRatio; /** Ratio of Width/Height of the Viewport **/
-    double viewportHeight; /** Height of the Viewport **/
-    double viewportWidth; /** Width of the Viewport **/
+    float aspectRatio; /** Ratio of Width/Height of the Viewport **/
+    float viewportHeight; /** Height of the Viewport **/
+    float viewportWidth; /** Width of the Viewport **/
 
-    double aperture = 0.1; /** Size of the Camera Hole **/
-    double lensRadius; /** Size of the Lens **/
-    double fov; /** Camera field of view **/
+    float aperture = 0.1f; /** Size of the Camera Hole **/
+    float lensRadius; /** Size of the Lens **/
+    float fov; /** Camera field of view **/
 
-    Eigen::Vector3d horizontal; /** Local x-coordinates **/
-    Eigen::Vector3d vertical; /** Local y-coordinates **/
-    Eigen::Vector3d lowerLeft; /** World bottomLeft corner **/
+    Vector3f horizontal; /** Local x-coordinates **/
+    Vector3f vertical; /** Local y-coordinates **/
+    Vector3f lowerLeft; /** World bottomLeft corner **/
 
 };
 
@@ -209,7 +261,7 @@ public:
      * @brief Measures time since initialization
      * @return Returns seconds since initialization
      */
-    double time();
+    float time();
 
 private:
     std::chrono::time_point<std::chrono::high_resolution_clock> start; /** Starting time **/
@@ -233,19 +285,19 @@ public:
     void plotHistogram();
 
 private:
-    std::vector<double> runtimes; /** Storage of individual runtimes **/
+    std::vector<float> runtimes; /** Storage of individual runtimes **/
 };
 
 /**
  * @brief Returns a random number
- * @return Returns a random number from -1.0 to 1.0
+ * @return Returns a random number from -1.0f to 1.0f
  */
-double getRandom();
+float getRandom();
 
 /**
  * @brief Returns a random point in the x-y unit sphere
  * @return Point inside the unit sphere
  */
-inline Eigen::Vector3d getRandomInSphere();
+inline Vector3f getRandomInSphere();
 
 

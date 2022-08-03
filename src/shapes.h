@@ -6,6 +6,7 @@
 
 #include "util.h"
 #include "materials.h"
+#include <cassert>
 
 
 
@@ -27,14 +28,14 @@ public:
      * @param[in] ray - Cast Ray
      * @return Distance to Shape
      */
-    virtual double findIntersect(const Ray &ray) const = 0;
+    virtual float findIntersect(const Ray &ray) const = 0;
 
     /**
      * @brief Given a position inside the Shape (Used in combination with @b findIntersect ) returns the Surface normal facing outwards
      * @param[in] pos - Position close to the Shape Surface
      * @return normalized Surface normal closest to pos
      */
-    virtual Eigen::Vector3d getNormal(const Eigen::Vector3d &pos) const = 0;
+    virtual Vector3f getNormal(const Vector3f &pos) const = 0;
 
     /**
      * @brief Calculates Hit object for a ray intersection at distance @a intersect
@@ -42,10 +43,10 @@ public:
      * @param[in] intersect - Distance until Ray intersects Shape
      * @return Hit object describing the intersection
      */
-    [[nodiscard]] virtual Hit calculateHit(const Ray &ray, double intersect) = 0;
+    [[nodiscard]] virtual Hit calculateHit(const Ray &ray, float intersect) = 0;
 
     /**
-     * @brief Conventient overload for @c calculateHit( const @a Ray &ray, @a double intersect)
+     * @brief Conventient overload for @c calculateHit( const @a Ray &ray, @a float intersect)
      * @param[in] ray - Ray that will intersect Shape
      * @return Hit object describing the intersection
      */
@@ -81,21 +82,21 @@ public:
      * @param[in] r - Radius of the Sphere
      * @param[in] mat - Material of Sphere
      */
-    Sphere(Eigen::Vector3d pos, double r, std::shared_ptr<Material> mat);
+    Sphere(Vector3f pos, float r, std::shared_ptr<Material> mat);
 
     /**
      * @brief Finds the intersection of a Ray with a Sphere
      * @param[in] ray - Ray to be considered
      * @return distance of closest intersection
      */
-    double findIntersect(const Ray &ray) const override;
+    float findIntersect(const Ray &ray) const override;
 
     /**
      * @brief Finds the normal for the Intersection
      * @param[in] pos - Position where Sphere is penetrated
      * @return Normalized Sphere Normal vector
      */
-    Eigen::Vector3d getNormal(const Eigen::Vector3d &pos) const override;
+    Vector3f getNormal(const Vector3f &pos) const override;
 
     /**
      * @brief Calculates the Hit object for a given Ray
@@ -103,12 +104,12 @@ public:
      * @param intersect - Distance where Sphere is intersected
      * @return Hit object of Intersection
      */
-    [[nodiscard]] Hit calculateHit(const Ray &ray, double intersect) override;
+    [[nodiscard]] Hit calculateHit(const Ray &ray, float intersect) override;
 
 
 private:
-    Eigen::Vector3d center; /** Center of the Sphere **/
-    double radius; /** Radius of the Sphere **/
+    Vector3f center; /** Center of the Sphere **/
+    float radius; /** Radius of the Sphere **/
 };
 
 
