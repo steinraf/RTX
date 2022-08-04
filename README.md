@@ -1,8 +1,3 @@
-# Basic Ray tracing project
+## Taken from the implementation of 
 
-
-### Simple Gradient
-![](renders/simple_gradient.png)
-
-
-This project was heavily inspired by the book [_Ray Tracing in One Weekend_](https://raytracing.github.io/books/RayTracingInOneWeekend.html)
+https://github.com/rogerallen/raytracinginoneweekendincuda/tree/ch11_defocus_blur_cuda
