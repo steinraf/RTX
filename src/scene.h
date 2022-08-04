@@ -3,7 +3,13 @@
 //
 
 #pragma once
+#include "util.h"
 
-
+class Scene{
+public:
+    Scene(Shape** shapes);
+private:
+    Shape** shapes;
+};
 
 
