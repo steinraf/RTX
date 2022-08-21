@@ -10,6 +10,7 @@
 
 #include "cuda_helpers.h"
 #include "vector.h"
+#include "hittableList.h"
 
 
 
@@ -33,6 +34,11 @@ private:
 
     Vector3f *deviceImageBuffer;
     const size_t imageBufferSize;
+
+    Hittable **deviceHittables;
+    const size_t numHittables = 2;
+
+    HittableList **deviceHittableList;
 
     curandState *deviceCurandState;
 

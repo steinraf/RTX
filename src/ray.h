@@ -13,7 +13,7 @@ public:
 
     __device__ Ray(const Vector3f &a, const Vector3f &b);
 
-    __device__ Vector3f pointAtTime(float t) const ;
+    __device__ Vector3f atTime(float t) const ;
 
     __device__ Vector3f getOrigin() const {return origin;}
     __device__ Vector3f getDirection() const {return dir;}

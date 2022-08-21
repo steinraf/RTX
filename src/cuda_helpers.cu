@@ -4,8 +4,11 @@
 
 #include "cuda_helpers.h"
 #include "ray.h"
+#include "sphere.h"
+#include "hittableList.h"
 
 #include <iostream>
+#include <cuda/std/limits>
 
 
 
@@ -30,13 +33,23 @@ namespace cuda_helpers{
         curand_init(42, pixelIndex, 0, &randState[pixelIndex]);
     }
 
-    __global__ void initVariables(int width, int height){
+    __global__ void initVariables(Hittable ** hittables, HittableList **hittableList, size_t numHittables, int width, int height){
         int i, j, pixelIndex;
         if (!initIndices(i, j, pixelIndex, 1, 1)) return;
 
-        Vector3f origin{0, 0, 0};
-        Vector3f lookAt(0, 0, -1);
-        const float distToFocus = (lookAt - origin).norm();
+        hittableList[0] = new HittableList(hittables, numHittables);
+
+//        hittableList = new HittableList(hittables, numHittables);
+
+
+
+//        hittables->maxSize = numHittables;
+
+
+        hittableList[0]->add(new Sphere({0, 0, -1}, 0.5));
+        hittableList[0]->add(new Sphere({0, -100.5, -1}, 100));
+
+
 
     }
 
@@ -47,27 +60,24 @@ namespace cuda_helpers{
 
     }
 
-    __device__ Color getColor(const Ray& r){
+    __device__ Color getColor(const Ray& r, HittableList **hittableList){
+        HitRecord record;
 
-        if(hitSphere({0,0,-1}, 0.5, r))
-            return {1.0f, 0, 0};
 
-        auto t = 0.5*(r.getDirection().normalized()[1] + 1.f);
+        if(hittableList[0]->hit(r, 0, cuda::std::numeric_limits<float>::infinity(), record))
+            return 0.5f*(record.normal + Color{1.0f});
 
+
+        float t = 0.5f*(r.getDirection().normalized()[1] + 1.f);
         return (1-t)*Vector3f{1.f} + t*Color{0.5f, 0.7f, 1.0f};
     }
 
     __device__ bool hitSphere(const Vector3f& center, float radius, const Ray&r){
-        auto oc = r.getOrigin() - center;
-        const float a = r.getDirection().squaredNorm();
-        const float b = 2.0f * oc.dot(r.getDirection());
-        const float c = oc.squaredNorm() - radius*radius;
-        const float disc = b*b - 4*a*c;
-        return disc > 0;
+      return false;
     }
 
 
-    __global__ void render(Vector3f *output, int width, int height, curandState *localRandState){
+    __global__ void render(Vector3f *output, HittableList **hittableList, int width, int height, curandState *localRandState){
         int i, j, pixelIndex;
         if (!initIndices(i, j, pixelIndex, width, height)) return;
 
@@ -91,7 +101,7 @@ namespace cuda_helpers{
 
         Ray ray{origin, lowerLeftCorner + u*horizontal + v*vertical - origin};
 
-        auto col = getColor(ray);
+        Color col = getColor(ray, hittableList);
 
         output[pixelIndex] = col;
     }

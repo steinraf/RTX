@@ -13,6 +13,9 @@ __host__ Scene::Scene(int width, int height) :  width(width), height(height),
 
     checkCudaErrors(cudaMalloc((void **) &deviceCurandState, width * height * sizeof(curandState)));
 
+    checkCudaErrors(cudaMalloc((void **) &deviceHittables, numHittables * sizeof(Hittable *)));
+    checkCudaErrors(cudaMalloc((void **) &deviceHittableList, sizeof(HittableList *)));
+
 
 
 }
@@ -30,11 +33,11 @@ void Scene::render() const{
     checkCudaErrors(cudaGetLastError());
     checkCudaErrors(cudaDeviceSynchronize());
 
-    cuda_helpers::initVariables<<<1, 1>>>(width, height);
+    cuda_helpers::initVariables<<<1, 1>>>(deviceHittables, deviceHittableList, numHittables, width, height);
     checkCudaErrors(cudaGetLastError());
     checkCudaErrors(cudaDeviceSynchronize());
 
-    cuda_helpers::render<<<blockSize, threadSize>>>(deviceImageBuffer, width, height, deviceCurandState);
+    cuda_helpers::render<<<blockSize, threadSize>>>(deviceImageBuffer, deviceHittableList, width, height, deviceCurandState);
     checkCudaErrors(cudaGetLastError());
     checkCudaErrors(cudaDeviceSynchronize());
 

@@ -8,6 +8,7 @@
 
 #include "vector.h"
 #include "ray.h"
+#include "hittableList.h"
 
 #define checkCudaErrors(val) cuda_helpers::check_cuda( (val), #val, __FILE__, __LINE__ )
 
@@ -19,7 +20,7 @@ namespace cuda_helpers {
 
     __global__ void initRng(int width, int height, curandState *randState);
 
-    __global__ void initVariables(int width, int height);
+    __global__ void initVariables(Hittable ** hittables, HittableList **hittableList, size_t numHittables, int width, int height);
     __global__ void freeVariables(int width, int height);
 
     __device__ Color getColor(const Ray& r);
@@ -27,7 +28,7 @@ namespace cuda_helpers {
     __device__ bool hitSphere(const Vector3f& center, float radius, const Ray&r);
 
 
-    __global__ void render(Vector3f *output, int width, int height,  curandState *localRandState);
+    __global__ void render(Vector3f *output, HittableList **hittableList, int width, int height,  curandState *localRandState);
 
 
     __device__ bool inline initIndices(int &i, int &j, int &pixelIndex, const int width, const int height){

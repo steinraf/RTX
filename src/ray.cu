@@ -15,7 +15,7 @@ __device__ Ray::Ray(const Vector3f &a, const Vector3f &b) {
     dir = b;
 }
 
-__device__ Vector3f Ray::pointAtTime(float t) const {
+__device__ Vector3f Ray::atTime(float t) const {
     return origin + t * dir;
 }
 
