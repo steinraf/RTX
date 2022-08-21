@@ -1,3 +1,3 @@
-## Taken from the implementation of
+### Most Basic Sphere
 
-https://github.com/rogerallen/raytracinginoneweekendincuda/tree/ch11_defocus_blur_cuda
+![](/renders/SimplestSphereIntersect.png)

@@ -49,11 +49,11 @@ void Scene::render() const{
     checkCudaErrors(cudaMemcpy(hostImageBuffer, deviceImageBuffer, imageBufferSize, cudaMemcpyDeviceToHost));
     checkCudaErrors(cudaDeviceSynchronize());
 
-    pngwriter png(width-1, height-1, 1., png_path.c_str());
+    pngwriter png(width, height, 1., png_path.c_str());
 
-    for (int j = height - 1; j >= 0; j--) {
+    for (int j = height-1; j >= 0; j--) {
         for (int i = 0; i < width; i++) {
-            png.plot(i, j, hostImageBuffer[j * width + i][0], hostImageBuffer[j * width + i][1], hostImageBuffer[j * width + i][2]);
+            png.plot(i+1, j+1, hostImageBuffer[j * width + i][0], hostImageBuffer[j * width + i][1], hostImageBuffer[j * width + i][2]);
         }
     }
 
